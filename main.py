@@ -1,13 +1,15 @@
+import os
 import pytz
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
+from contextlib import asynccontextmanager
 from utils import *
-app = FastAPI()
+
 processed_events = set()
 
-
-@app.on_event("startup")
-async def startup_event():
+# 👇 Lifespan context for startup/shutdown
+@asynccontextmanager
+async def lifespan(app: FastAPI):
     print("🚀 Starting FastAPI + Scheduler")
     tz = pytz.timezone("Asia/Karachi")
 
@@ -50,10 +52,17 @@ async def startup_event():
     )
 
     scheduler.start()
+    yield   # app runs while scheduler is active
+    scheduler.shutdown()  # cleanup when app stops
+
+# Create FastAPI app with lifespan
+app = FastAPI(lifespan=lifespan)
+
 
 @app.get("/")
 async def home():
     return {"message": "Slack bot running ✅"}
+
 
 @app.post("/slack/events")
 async def slack_events(req: Request):
@@ -66,7 +75,7 @@ async def slack_events(req: Request):
     if "event" in data:
         event = data["event"]
 
-        # 🔑 Deduplication key (client_msg_id if present, otherwise timestamp)
+        # 🔑 Deduplication key
         msg_id = event.get("client_msg_id") or event.get("ts")
         if msg_id in processed_events:
             return {"ok": True}
