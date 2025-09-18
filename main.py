@@ -12,14 +12,6 @@ processed_events = set()
 async def lifespan(app: FastAPI):
     print("🚀 Starting FastAPI + Scheduler")
     tz = pytz.timezone("Asia/Karachi")
-    
-    #test
-    scheduler.add_job(
-        send_daily_messages,  # <-- or any function you want
-        trigger="cron",
-        minute="*/5",
-        timezone=tz
-    )
 
     # Tuesday → reminder at 1 PM
     scheduler.add_job(
