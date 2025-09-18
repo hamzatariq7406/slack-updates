@@ -63,9 +63,9 @@ I'll automatically transcribe and format it into the sections below.
 """
 
 raw_data = [
-    # ("scott@pladhomes.com", "Scott Impola", "testing-executive-updates"),
+    ("scott@pladhomes.com", "Scott Impola", "testing-executive-updates"),
     ("muhammadjunaidakhter100@gmail.com", "M. Junaid", "testing-executive-updates")
-    # ("info@pladhomes.com", "Pladhomes", "testing-executive-updates")
+    ("info@pladhomes.com", "Pladhomes", "testing-executive-updates")
 ]
 
 def record_employee_update(email: str):
