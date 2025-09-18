@@ -17,7 +17,7 @@ async def lifespan(app: FastAPI):
     scheduler.add_job(
         send_daily_messages,  # <-- or any function you want
         trigger="cron",
-        minute="*/1",
+        minute="*/5",
         timezone=tz
     )
 
